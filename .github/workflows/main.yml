@@ -34,5 +34,14 @@ jobs:
       run: |
         ls ${{ github.workspace }}
         docker pull perforce/ubuntu22-mend
-        docker run -v ${{ github.workspace }}:/build \
-        perforce/ubuntu22-mend ls /build
+        docker run -v ${{ github.workspace }}:/scan \
+        perforce/ubuntu22-mend bash -c "java -jar /opt/white-source/wss-unified-agent.jar \
+        -noConfig true \
+        -d /scan \
+        -project p4jenkins-main \
+        -apiKey ${{ secrets.MEND_API_KEY }} \
+        -userKey ${{ secrets.MEND_USER_KEY }} \
+        -product p4jenkins \
+        -wss.url https://saas-eu.whitesourcesoftware.com/agent \
+        -resolveAllDependencies false \
+        -maven.resolveDependencies true"
